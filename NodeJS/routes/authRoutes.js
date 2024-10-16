@@ -14,7 +14,14 @@ const loginLimiter = rateLimit({
 
 router.post('/signup', signup);
 router.post('/login', loginLimiter, login);
-router.get('/protected', protect, (req, res) => {
+// Rate limiter: maximum of 10 requests per minute for protected routes
+const protectedLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 10, // limit each IP to 10 requests per windowMs
+  message: 'Too many requests from this IP, please try again after a minute'
+});
+
+router.get('/protected', protectedLimiter, protect, (req, res) => {
   res.send('This is a protected route');
 });
 
