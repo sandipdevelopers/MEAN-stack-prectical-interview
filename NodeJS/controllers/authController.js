@@ -39,7 +39,7 @@ exports.signup = async (req, res) => {
 exports.login = async (req, res) => {
   const { email, password } = req.body;
   try {
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email: { $eq: email } });
     if (!user || !(await user.matchPassword(password))) {
       return sendError(res, 401, 'INVALID_CREDENTIALS', 'Invalid email or password');
     }
